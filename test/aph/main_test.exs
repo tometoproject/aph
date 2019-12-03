@@ -81,4 +81,63 @@ defmodule Aph.MainTest do
       assert %Ecto.Changeset{} = Main.change_avatar(avatar)
     end
   end
+
+  describe "statuses" do
+    alias Aph.Main.Status
+
+    @valid_attrs %{content: "some content"}
+    @update_attrs %{content: "some updated content"}
+    @invalid_attrs %{content: nil}
+
+    def status_fixture(attrs \\ %{}) do
+      {:ok, status} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Main.create_status()
+
+      status
+    end
+
+    test "list_statuses/0 returns all statuses" do
+      status = status_fixture()
+      assert Main.list_statuses() == [status]
+    end
+
+    test "get_status!/1 returns the status with given id" do
+      status = status_fixture()
+      assert Main.get_status!(status.id) == status
+    end
+
+    test "create_status/1 with valid data creates a status" do
+      assert {:ok, %Status{} = status} = Main.create_status(@valid_attrs)
+      assert status.content == "some content"
+    end
+
+    test "create_status/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Main.create_status(@invalid_attrs)
+    end
+
+    test "update_status/2 with valid data updates the status" do
+      status = status_fixture()
+      assert {:ok, %Status{} = status} = Main.update_status(status, @update_attrs)
+      assert status.content == "some updated content"
+    end
+
+    test "update_status/2 with invalid data returns error changeset" do
+      status = status_fixture()
+      assert {:error, %Ecto.Changeset{}} = Main.update_status(status, @invalid_attrs)
+      assert status == Main.get_status!(status.id)
+    end
+
+    test "delete_status/1 deletes the status" do
+      status = status_fixture()
+      assert {:ok, %Status{}} = Main.delete_status(status)
+      assert_raise Ecto.NoResultsError, fn -> Main.get_status!(status.id) end
+    end
+
+    test "change_status/1 returns a status changeset" do
+      status = status_fixture()
+      assert %Ecto.Changeset{} = Main.change_status(status)
+    end
+  end
 end
