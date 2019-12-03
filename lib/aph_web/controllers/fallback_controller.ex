@@ -26,4 +26,11 @@ defmodule AphWeb.FallbackController do
     |> put_view(AphWeb.ErrorView)
     |> render(:"401")
   end
+
+  def call(conn, {:error, :enoent}) do
+    conn
+    |> put_status(:insufficient_storage)
+    |> put_view(AphWeb.ErrorView)
+    |> render(:"507")
+  end
 end

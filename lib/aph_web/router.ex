@@ -18,6 +18,7 @@ defmodule AphWeb.Router do
 
   scope "/api", AphWeb do
     pipe_through [:api, :user_auth]
+    get "/avatar/:id", AvatarController, :show
     post "/avatar/new", AvatarController, :create
   end
 end
