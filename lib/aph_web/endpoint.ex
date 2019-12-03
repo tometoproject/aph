@@ -40,5 +40,7 @@ defmodule AphWeb.Endpoint do
     key: "_aph_key",
     signing_salt: "kjRL8dvd"
 
+  plug CORSPlug
+
   plug AphWeb.Router
 end

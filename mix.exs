@@ -43,7 +43,8 @@ defmodule Aph.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:guardian, "~> 2.0"},
       {:comeonin, "~> 5.1"},
-      {:argon2_elixir, "~> 2.1"}
+      {:argon2_elixir, "~> 2.1"},
+      {:cors_plug, "~> 2.0"}
     ]
   end
 
