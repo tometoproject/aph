@@ -5,7 +5,7 @@ defmodule Aph.Repo.Migrations.CreateUsers do
     create table(:users) do
       add :email, :text
       add :username, :text
-      add :password, :text
+      add :encrypted_password, :text
 
       timestamps()
     end

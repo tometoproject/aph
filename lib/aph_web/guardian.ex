@@ -16,7 +16,7 @@ defmodule AphWeb.Guardian do
 
   def authenticate(username, password) do
     with {:ok, user} <- Accounts.get_by_username(username) do
-      case validate_password(password, user.password) do
+      case validate_password(password, user.encrypted_password) do
         true -> create_token(user)
         false -> {:error, :unauthorized}
       end
