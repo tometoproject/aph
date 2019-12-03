@@ -13,7 +13,8 @@ defmodule Aph.Main.Status do
   @doc false
   def changeset(status, attrs) do
     status
-    |> cast(attrs, [:content])
-    |> validate_required([:content])
+    |> cast(attrs, [:content, :avatar_id, :related_status_id])
+    |> validate_required([:content, :avatar_id])
+    |> validate_length(:content, max: 300)
   end
 end
