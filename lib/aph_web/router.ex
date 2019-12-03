@@ -7,5 +7,8 @@ defmodule AphWeb.Router do
 
   scope "/api", AphWeb do
     pipe_through :api
+    get "/", DefaultController, :index
+    post "/register", UserController, :create
+    post "/auth", UserController, :login
   end
 end

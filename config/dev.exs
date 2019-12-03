@@ -2,8 +2,7 @@ use Mix.Config
 
 # Configure your database
 config :aph, Aph.Repo,
-  username: "postgres",
-  password: "postgres",
+  username: "lu",
   database: "aph_dev",
   hostname: "localhost",
   show_sensitive_data_on_connection_error: true,
