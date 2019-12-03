@@ -7,7 +7,11 @@ defmodule Aph.AccountsTest do
     alias Aph.Accounts.User
 
     @valid_attrs %{email: "some email", password: "some password", username: "some username"}
-    @update_attrs %{email: "some updated email", password: "some updated password", username: "some updated username"}
+    @update_attrs %{
+      email: "some updated email",
+      password: "some updated password",
+      username: "some updated username"
+    }
     @invalid_attrs %{email: nil, password: nil, username: nil}
 
     def user_fixture(attrs \\ %{}) do

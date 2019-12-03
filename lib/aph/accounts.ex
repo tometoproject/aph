@@ -14,6 +14,7 @@ defmodule Aph.Accounts do
     case Repo.get_by(User, username: username) do
       nil ->
         {:error, :not_found}
+
       user ->
         {:ok, user}
     end

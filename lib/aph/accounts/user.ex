@@ -23,7 +23,9 @@ defmodule Aph.Accounts.User do
     |> put_hashed_password
   end
 
-  defp put_hashed_password(%Ecto.Changeset{valid?: true, changes: %{plain_password: password}} = changeset) do
+  defp put_hashed_password(
+         %Ecto.Changeset{valid?: true, changes: %{plain_password: password}} = changeset
+       ) do
     put_change(changeset, :password, Argon2.add_hash(password).password_hash)
   end
 
