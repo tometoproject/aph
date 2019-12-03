@@ -20,7 +20,7 @@ defmodule AphWeb.UserController do
     with {:ok, user, token} <- Guardian.authenticate(username, password) do
       conn
       |> put_status(:ok)
-      |> put_resp_cookie("auth", token, http_only: true)
+      |> AphWeb.Guardian.Plug.remember_me(user)
       |> render(:show, user: user)
     end
   end
