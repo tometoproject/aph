@@ -20,10 +20,14 @@ defmodule Aph.Main do
     end
   end
 
-  def update_avatar(%Avatar{} = avatar, attrs) do
-    avatar
-    |> Avatar.changeset(attrs)
-    |> Repo.update()
+  def update_avatar(%Avatar{} = avatar, attrs \\ %{}, pic1, pic2) do
+    with {:ok, avatar} <- avatar |> Avatar.changeset(attrs) |> Repo.update(),
+         :ok <- File.cp(pic1.path, elem(avatar_picture_path(avatar.id), 0)),
+         :ok <- File.cp(pic2.path, elem(avatar_picture_path(avatar.id), 1)) do
+      {:ok, avatar}
+    else
+      {:error, reason} = error -> error
+    end
   end
 
   def delete_avatar(%Avatar{} = avatar) do

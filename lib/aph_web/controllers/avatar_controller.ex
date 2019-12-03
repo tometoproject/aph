@@ -3,13 +3,9 @@ defmodule AphWeb.AvatarController do
 
   alias Aph.Main
   alias Aph.Main.Avatar
+  alias AphWeb.Guardian
 
   action_fallback AphWeb.FallbackController
-
-  def index(conn, _params) do
-    avatars = Main.list_avatars()
-    render(conn, "index.json", avatars: avatars)
-  end
 
   def create(conn, %{
         "name" => name,
@@ -20,28 +16,52 @@ defmodule AphWeb.AvatarController do
         "pic1" => pic1,
         "pic2" => pic2
       }) do
+    %{id: user_id} = Guardian.Plug.current_resource(conn)
     with {:ok, %Avatar{} = avatar} <-
            Main.create_avatar(
-             %{name: name, pitch: pitch, speed: speed, language: language, gender: gender},
+             %{name: name, pitch: pitch, speed: speed, language: language, gender: gender, user_id: user_id},
              pic1,
              pic2
            ) do
       conn
       |> put_status(:created)
-      |> render("show.json", avatar: avatar)
+      |> render(:show, avatar: avatar)
     end
   end
 
   def show(conn, %{"id" => id}) do
     avatar = Main.get_avatar(id)
-    render(conn, "show.json", avatar: avatar)
+    render(conn, :show, avatar: avatar)
   end
 
-  def update(conn, %{"id" => id, "avatar" => avatar_params}) do
-    avatar = Main.get_avatar!(id)
+  def update(conn, %{
+        "id" => id,
+        "name" => name,
+        "pitch" => pitch,
+        "speed" => speed,
+        "language" => language,
+        "gender" => gender,
+        "pic1" => pic1,
+        "pic2" => pic2
+      }) do
+    avatar = Main.get_avatar(id)
+    %{id: user_id} = Guardian.Plug.current_resource(conn)
 
-    with {:ok, %Avatar{} = avatar} <- Main.update_avatar(avatar, avatar_params) do
-      render(conn, "show.json", avatar: avatar)
+    if avatar.user_id != user_id do
+      conn
+      |> put_status(:unauthorized)
+      |> put_view(AphWeb.ErrorView)
+      |> render(:"401")
+    end
+
+    with {:ok, %Avatar{} = avatar} <-
+           Main.update_avatar(
+             avatar,
+             %{id: id, name: name, pitch: pitch, speed: speed, language: language, gender: gender},
+             pic1,
+             pic2
+           ) do
+      render(conn, :show, avatar: avatar)
     end
   end
 

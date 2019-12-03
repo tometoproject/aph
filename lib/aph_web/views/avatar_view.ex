@@ -17,7 +17,8 @@ defmodule AphWeb.AvatarView do
       pitch: avatar.pitch,
       speed: avatar.speed,
       language: avatar.language,
-      gender: avatar.gender
+      gender: avatar.gender,
+      user_id: avatar.user_id
     }
   end
 end
