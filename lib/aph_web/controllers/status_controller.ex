@@ -15,22 +15,14 @@ defmodule AphWeb.StatusController do
 
   def create(conn, %{"content" => content, "id" => id}) do
     %{id: user_id} = Guardian.Plug.current_resource(conn)
-    with {:ok, other_status} <- Aph.Repo.get_by(Status, id) do
-      if other_status.related_status_id do
-        conn
-        |> put_status(:bad_request)
-        |> put_view(AphWeb.ErrorView)
-        |> render(:"400")
-      end
-    end
+    # TODO: handle comments
   end
 
   def create(conn, %{"content" => content}) do
     %{id: user_id} = Guardian.Plug.current_resource(conn)
-    with {:ok, %Status{} = status} <- Main.create_status(content, user_id) do
+    with {:ok, %Status{} = status} <- Main.create_status(%{content: content, user_id: user_id}) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", Routes.status_path(conn, :show, status))
       |> render("show.json", status: status)
     end
   end

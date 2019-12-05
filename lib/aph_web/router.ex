@@ -21,5 +21,6 @@ defmodule AphWeb.Router do
     get "/avatar/:id", AvatarController, :show
     put "/avatar/:id/update", AvatarController, :update
     post "/avatar/new", AvatarController, :create
+    post "/status/new", StatusController, :create
   end
 end
