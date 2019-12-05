@@ -1,6 +1,7 @@
 defmodule Aph.Main do
   import Ecto.Query, warn: false
   alias Aph.Repo
+  alias Aph.TTS
 
   alias Aph.Main.Avatar
 
@@ -56,9 +57,17 @@ defmodule Aph.Main do
     av = Repo.get_by!(Avatar, user_id: user_id)
     changeset = Map.put(attrs, :avatar_id, av.id)
 
-    %Status{}
-    |> Status.changeset(changeset)
-    |> Repo.insert()
+    validated = %Status{} |> Status.changeset(changeset)
+    with {:ok, status} <- Repo.insert(validated),
+         :ok <- TTS.synthesize(status.id, status.content, av.pitch, av.speed),
+         :ok <- TTS.clean(status.id) do
+      {:ok, status}
+    else
+      {:error, err} -> {:error, err}
+      {:tts_error, id} ->
+        Repo.delete!(%Status{id: id})
+        {:error, "Error while generating Text-to-speech audio!"}
+    end
   end
 
   def update_status(%Status{} = status, attrs) do

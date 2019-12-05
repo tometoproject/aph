@@ -1,5 +1,8 @@
 use Mix.Config
 
+config :aph,
+  storage: "espeak"
+
 # Configure your database!
 config :aph, Aph.Repo,
   username: "lu",

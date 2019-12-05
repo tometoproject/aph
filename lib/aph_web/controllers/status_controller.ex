@@ -46,6 +46,12 @@ defmodule AphWeb.StatusController do
       conn
       |> put_status(:created)
       |> render(:show, status: status)
+    else
+      {:error, err} ->
+        conn
+        |> put_status(:internal_server_error)
+        |> put_view(AphWeb.ErrorView)
+        |> render(:"500", message: err)
     end
   end
 
