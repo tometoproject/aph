@@ -11,7 +11,6 @@ defmodule AphWeb.StatusView do
   end
 
   def render("status.json", %{status: status}) do
-    %{id: status.id,
-      content: status.content}
+    %{id: status.id, content: status.content}
   end
 end

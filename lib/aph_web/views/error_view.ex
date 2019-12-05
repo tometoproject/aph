@@ -9,6 +9,7 @@ defmodule AphWeb.ErrorView do
     if assigns.message do
       %{message: "Unauthorized: #{assigns.message}"}
     end
+
     %{message: "Unauthorized!"}
   end
 

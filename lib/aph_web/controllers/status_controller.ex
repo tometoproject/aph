@@ -4,7 +4,6 @@ defmodule AphWeb.StatusController do
   alias Aph.Main
   alias Aph.Repo
   alias Aph.Main.Status
-  alias Aph.Main.Avatar
   alias AphWeb.Guardian
 
   action_fallback AphWeb.FallbackController
@@ -16,9 +15,11 @@ defmodule AphWeb.StatusController do
 
   def create(conn, %{"content" => content, "related_status_id" => id}) do
     %{id: user_id} = Guardian.Plug.current_resource(conn)
-    with other_status <- Repo.get(Status, id) do
+
+    with other_status when is_nil(other_status) == false <- Repo.get(Status, id) do
       if !other_status.related_status_id do
-        with {:ok, status} <- Main.create_status(user_id, %{content: content, related_status_id: id}) do
+        with {:ok, status} <-
+               Main.create_status(user_id, %{content: content, related_status_id: id}) do
           conn
           |> put_status(:created)
           |> render(:show, status: status)
@@ -40,6 +41,7 @@ defmodule AphWeb.StatusController do
 
   def create(conn, %{"content" => content}) do
     %{id: user_id} = Guardian.Plug.current_resource(conn)
+
     with {:ok, %Status{} = status} <- Main.create_status(user_id, %{content: content}) do
       conn
       |> put_status(:created)

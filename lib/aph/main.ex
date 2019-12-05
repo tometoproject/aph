@@ -16,7 +16,7 @@ defmodule Aph.Main do
          :ok <- File.cp(pic2.path, elem(avatar_picture_path(avatar.id), 1)) do
       {:ok, avatar}
     else
-      {:error, reason} = error -> error
+      {:error, _reason} = error -> error
     end
   end
 
@@ -26,7 +26,7 @@ defmodule Aph.Main do
          :ok <- File.cp(pic2.path, elem(avatar_picture_path(avatar.id), 1)) do
       {:ok, avatar}
     else
-      {:error, reason} = error -> error
+      {:error, _reason} = error -> error
     end
   end
 
@@ -55,6 +55,7 @@ defmodule Aph.Main do
   def create_status(user_id, attrs \\ {}) do
     av = Repo.get_by!(Avatar, user_id: user_id)
     changeset = Map.put(attrs, :avatar_id, av.id)
+
     %Status{}
     |> Status.changeset(changeset)
     |> Repo.insert()

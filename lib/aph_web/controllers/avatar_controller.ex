@@ -17,9 +17,17 @@ defmodule AphWeb.AvatarController do
         "pic2" => pic2
       }) do
     %{id: user_id} = Guardian.Plug.current_resource(conn)
+
     with {:ok, %Avatar{} = avatar} <-
            Main.create_avatar(
-             %{name: name, pitch: pitch, speed: speed, language: language, gender: gender, user_id: user_id},
+             %{
+               name: name,
+               pitch: pitch,
+               speed: speed,
+               language: language,
+               gender: gender,
+               user_id: user_id
+             },
              pic1,
              pic2
            ) do
@@ -57,7 +65,14 @@ defmodule AphWeb.AvatarController do
     with {:ok, %Avatar{} = avatar} <-
            Main.update_avatar(
              avatar,
-             %{id: id, name: name, pitch: pitch, speed: speed, language: language, gender: gender},
+             %{
+               id: id,
+               name: name,
+               pitch: pitch,
+               speed: speed,
+               language: language,
+               gender: gender
+             },
              pic1,
              pic2
            ) do
@@ -66,7 +81,7 @@ defmodule AphWeb.AvatarController do
   end
 
   def delete(conn, %{"id" => id}) do
-    avatar = Main.get_avatar!(id)
+    avatar = Main.get_avatar(id)
 
     with {:ok, %Avatar{}} <- Main.delete_avatar(avatar) do
       send_resp(conn, :no_content, "")
