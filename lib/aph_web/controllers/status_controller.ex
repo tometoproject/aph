@@ -2,6 +2,7 @@ defmodule AphWeb.StatusController do
   use AphWeb, :controller
 
   alias Aph.Main
+  alias Aph.Repo
   alias Aph.Main.Status
   alias Aph.Main.Avatar
   alias AphWeb.Guardian
@@ -13,17 +14,36 @@ defmodule AphWeb.StatusController do
     render(conn, "index.json", statuses: statuses)
   end
 
-  def create(conn, %{"content" => content, "id" => id}) do
+  def create(conn, %{"content" => content, "related_status_id" => id}) do
     %{id: user_id} = Guardian.Plug.current_resource(conn)
-    # TODO: handle comments
+    with other_status <- Repo.get(Status, id) do
+      if !other_status.related_status_id do
+        with {:ok, status} <- Main.create_status(user_id, %{content: content, related_status_id: id}) do
+          conn
+          |> put_status(:created)
+          |> render(:show, status: status)
+        end
+      else
+        conn
+        |> put_status(:bad_request)
+        |> put_view(AphWeb.ErrorView)
+        |> render(:"400", message: "You can't comment on a comment!")
+      end
+    else
+      nil ->
+        conn
+        |> put_status(:bad_request)
+        |> put_view(AphWeb.ErrorView)
+        |> render(:"400", message: "Nonexistent related status ID!")
+    end
   end
 
   def create(conn, %{"content" => content}) do
     %{id: user_id} = Guardian.Plug.current_resource(conn)
-    with {:ok, %Status{} = status} <- Main.create_status(%{content: content, user_id: user_id}) do
+    with {:ok, %Status{} = status} <- Main.create_status(user_id, %{content: content}) do
       conn
       |> put_status(:created)
-      |> render("show.json", status: status)
+      |> render(:show, status: status)
     end
   end
 

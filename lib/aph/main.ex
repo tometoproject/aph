@@ -52,8 +52,8 @@ defmodule Aph.Main do
 
   def get_status!(id), do: Repo.get!(Status, id)
 
-  def create_status(attrs \\ {}) do
-    av = Repo.get_by!(Avatar, user_id: attrs.user_id)
+  def create_status(user_id, attrs \\ {}) do
+    av = Repo.get_by!(Avatar, user_id: user_id)
     changeset = Map.put(attrs, :avatar_id, av.id)
     %Status{}
     |> Status.changeset(changeset)
