@@ -37,8 +37,8 @@ defmodule Aph.TTS do
   end
 
   def clean(name) do
-    with :ok <- File.cp("gentts/#{name}/out.json", "priv/static/st-#{name}.json"),
-         :ok <- File.cp("gentts/#{name}/temp.ogg", "priv/static/st-#{name}.ogg"),
+    with :ok <- File.cp("gentts/#{name}/out.json", "priv/static/st#{name}.json"),
+         :ok <- File.cp("gentts/#{name}/temp.ogg", "priv/static/st#{name}.ogg"),
          {:ok, _} <- File.rm_rf("gentts/#{name}") do
       :ok
     else

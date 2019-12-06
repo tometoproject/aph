@@ -1,7 +1,8 @@
 use Mix.Config
 
 config :aph,
-  storage: "espeak"
+  storage: "espeak",
+  hostname: "http://localhost:4001"
 
 # Configure your database!
 config :aph, Aph.Repo,

@@ -53,6 +53,37 @@ defmodule Aph.Main do
 
   def get_status!(id), do: Repo.get!(Status, id)
 
+  def get_status_for_display!(id) do
+    status = Repo.get!(Status, id)
+    format_status_for_display(status)
+  end
+
+  def get_status_comments!(id) do
+    query = from s in Status,
+      where: s.related_status_id == ^id,
+      select: s
+    statuses = Repo.all(query)
+    Enum.map(statuses, fn s -> format_status_for_display(s) end)
+  end
+
+  defp format_status_for_display(%Status{} = status) do
+    hostname = Application.get_env(:aph, :hostname)
+    avatar = Repo.get_by!(Avatar, id: status.avatar_id)
+    audio_path = "#{hostname}/storage/st#{status.id}.ogg"
+    timestamps_path = "#{hostname}/storage/st#{status.id}.json"
+    pic1_path = "#{hostname}/storage/av#{avatar.id}-1.png"
+    pic2_path = "#{hostname}/storage/av#{avatar.id}-2.png"
+
+    %{
+        audio: audio_path,
+        timestamps: timestamps_path,
+        avatar_name: avatar.name,
+        pic1: pic1_path,
+        pic2: pic2_path,
+        related_status_id: status.related_status_id
+     }
+  end
+
   def create_status(user_id, attrs \\ {}) do
     av = Repo.get_by!(Avatar, user_id: user_id)
     changeset = Map.put(attrs, :avatar_id, av.id)

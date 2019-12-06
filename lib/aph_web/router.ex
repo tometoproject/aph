@@ -14,10 +14,14 @@ defmodule AphWeb.Router do
     get "/", DefaultController, :index
     post "/register", UserController, :create
     post "/auth", UserController, :login
+    get "/status/:id", StatusController, :show
+    get "/status/:id/comments", StatusController, :show_comments
   end
 
   scope "/api", AphWeb do
     pipe_through [:api, :user_auth]
+    delete "/auth", UserController, :logout
+    get "/poll", UserController, :poll
     get "/avatar/:id", AvatarController, :show
     put "/avatar/:id/update", AvatarController, :update
     post "/avatar/new", AvatarController, :create

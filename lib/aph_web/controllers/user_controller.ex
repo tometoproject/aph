@@ -25,6 +25,19 @@ defmodule AphWeb.UserController do
     end
   end
 
+  def logout(conn, attrs \\ {}) do
+    # TODO: Make this more secure
+    Guardian.Plug.clear_remember_me(conn)
+  end
+
+  def poll(conn, attrs \\ {}) do
+    user = Guardian.Plug.current_resource(conn)
+    case Accounts.check_avatar(user) do
+      :ok -> conn |> put_status(:ok) |> render(:poll, has_avatar: true)
+      :error -> conn |> put_status(:ok) |> render(:poll, has_avatar: false)
+    end
+  end
+
   def update(conn, %{"id" => id, "user" => user_params}) do
     user = Accounts.get_user(id)
 

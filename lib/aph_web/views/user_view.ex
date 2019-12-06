@@ -9,4 +9,8 @@ defmodule AphWeb.UserView do
   def render("user.json", %{user: user}) do
     %{id: user.id, email: user.email, username: user.username}
   end
+
+  def render("poll.json", %{has_avatar: h}) do
+    %{has_avatar: h}
+  end
 end

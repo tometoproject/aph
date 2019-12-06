@@ -1,11 +1,11 @@
 defmodule AphWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :aph
 
+  plug CORSPlug
   plug Plug.Static,
-    at: "/",
+    at: "/storage",
     from: :aph,
-    gzip: false,
-    only: ~w(css fonts images js favicon.ico robots.txt)
+    gzip: false
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
@@ -23,8 +23,6 @@ defmodule AphWeb.Endpoint do
 
   plug Plug.MethodOverride
   plug Plug.Head
-
-  plug CORSPlug
 
   plug AphWeb.Router
 end
