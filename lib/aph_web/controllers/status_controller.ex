@@ -57,12 +57,12 @@ defmodule AphWeb.StatusController do
 
   def show(conn, %{"id" => id}) do
     status = Main.get_status_for_display!(id)
-    render(conn, :show, status: status)
+    render(conn, :show_display, status: status)
   end
 
   def show_comments(conn, %{"id" => id}) do
     comments = Main.get_status_comments!(id)
-    render(conn, :index, statuses: comments)
+    render(conn, :index_display, statuses: comments)
   end
 
   def update(conn, %{"id" => id, "status" => status_params}) do
