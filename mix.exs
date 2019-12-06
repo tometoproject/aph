@@ -44,7 +44,8 @@ defmodule Aph.MixProject do
       {:guardian, "~> 2.0"},
       {:comeonin, "~> 5.1"},
       {:argon2_elixir, "~> 2.1"},
-      {:cors_plug, "~> 2.0"}
+      {:cors_plug, "~> 2.0"},
+      {:httpoison, "~> 1.6"}
     ]
   end
 

@@ -2,7 +2,8 @@ use Mix.Config
 
 config :aph,
   storage: "espeak",
-  hostname: "http://localhost:4001"
+  hostname: "http://localhost:4001",
+  google_key: "replaceme"
 
 # Configure your database!
 config :aph, Aph.Repo,
