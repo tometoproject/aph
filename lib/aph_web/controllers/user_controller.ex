@@ -32,6 +32,7 @@ defmodule AphWeb.UserController do
 
   def poll(conn, attrs \\ {}) do
     user = Guardian.Plug.current_resource(conn)
+
     case Accounts.check_avatar(user) do
       :ok -> conn |> put_status(:ok) |> render(:poll, has_avatar: true)
       :error -> conn |> put_status(:ok) |> render(:poll, has_avatar: false)

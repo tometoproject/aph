@@ -4,13 +4,22 @@ defmodule Aph.TTS do
 
     if Application.get_env(:aph, :storage) == "google" do
       api_key = Application.get_env(:aph, :google_key)
-      body = Jason.encode!(%{
-            input: %{text: text},
-            voice: %{languageCode: "en-US", name: "en-US-Standard-B"},
-            audioConfig: %{audioEncoding: "OGG_OPUS", pitch: pitch || 0, speakingRate: speed || 1.0}
-      })
+
+      body =
+        Jason.encode!(%{
+          input: %{text: text},
+          voice: %{languageCode: "en-US", name: "en-US-Standard-B"},
+          audioConfig: %{audioEncoding: "OGG_OPUS", pitch: pitch || 0, speakingRate: speed || 1.0}
+        })
+
       headers = [{"content-type", "application/json"}]
-      with {:ok, res} <- HTTPoison.post("https://texttospeech.googleapis.com/v1/text:synthesize?key=#{api_key}", body, headers),
+
+      with {:ok, res} <-
+             HTTPoison.post(
+               "https://texttospeech.googleapis.com/v1/text:synthesize?key=#{api_key}",
+               body,
+               headers
+             ),
            {:ok, json} <- Jason.decode(res.body),
            {:ok, content} <- Base.decode64(json["audioContent"]),
            :ok <- File.write("gentts/#{name}/temp.ogg", content),
@@ -62,7 +71,8 @@ defmodule Aph.TTS do
   end
 
   defp align(name, text) do
-    with :ok <- File.write("gentts/#{name}/temp.txt", text |> String.split(" ") |> Enum.join("\n") ),
+    with :ok <-
+           File.write("gentts/#{name}/temp.txt", text |> String.split(" ") |> Enum.join("\n")),
          {_, 0} <-
            System.cmd("python3", [
              "-m",
@@ -75,7 +85,7 @@ defmodule Aph.TTS do
       :ok
     else
       {:error, err} -> {:error, err}
-      {err, 1} -> ({:error, err})
+      {err, 1} -> {:error, err}
     end
   end
 end

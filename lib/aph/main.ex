@@ -59,9 +59,11 @@ defmodule Aph.Main do
   end
 
   def get_status_comments!(id) do
-    query = from s in Status,
-      where: s.related_status_id == ^id,
-      select: s
+    query =
+      from s in Status,
+        where: s.related_status_id == ^id,
+        select: s
+
     statuses = Repo.all(query)
     Enum.map(statuses, fn s -> format_status_for_display(s) end)
   end
@@ -75,13 +77,13 @@ defmodule Aph.Main do
     pic2_path = "#{hostname}/storage/av#{avatar.id}-2.png"
 
     %{
-        audio: audio_path,
-        timestamps: timestamps_path,
-        avatar_name: avatar.name,
-        pic1: pic1_path,
-        pic2: pic2_path,
-        related_status_id: status.related_status_id
-     }
+      audio: audio_path,
+      timestamps: timestamps_path,
+      avatar_name: avatar.name,
+      pic1: pic1_path,
+      pic2: pic2_path,
+      related_status_id: status.related_status_id
+    }
   end
 
   def create_status(user_id, attrs \\ {}) do
@@ -89,12 +91,15 @@ defmodule Aph.Main do
     changeset = Map.put(attrs, :avatar_id, av.id)
 
     validated = %Status{} |> Status.changeset(changeset)
+
     with {:ok, status} <- Repo.insert(validated),
          :ok <- TTS.synthesize(status.id, status.content, av.pitch, av.speed),
          :ok <- TTS.clean(status.id) do
       {:ok, status}
     else
-      {:error, err} -> {:error, err}
+      {:error, err} ->
+        {:error, err}
+
       {:tts_error, id} ->
         Repo.delete!(%Status{id: id})
         {:error, "Error while generating Text-to-speech audio!"}

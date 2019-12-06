@@ -2,6 +2,7 @@ defmodule AphWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :aph
 
   plug CORSPlug
+
   plug Plug.Static,
     at: "/storage",
     from: :aph,
