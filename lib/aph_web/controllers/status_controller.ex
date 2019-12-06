@@ -13,7 +13,7 @@ defmodule AphWeb.StatusController do
     render(conn, "index.json", statuses: statuses)
   end
 
-  def create(conn, %{"content" => content, "related_status_id" => id}) do
+  def create(conn, %{"content" => content, "id" => id}) do
     %{id: user_id} = Guardian.Plug.current_resource(conn)
 
     with other_status when is_nil(other_status) == false <- Repo.get(Status, id) do
